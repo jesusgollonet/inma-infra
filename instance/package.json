@@ -1,0 +1,13 @@
+{
+  "name": "inma-infra",
+  "description": "Infrastructure for Inma's wordpress sites",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "@pulumi/pulumi": "*",
+    "@pulumi/hcloud": "1.16.1"
+  }
+}

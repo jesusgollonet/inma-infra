@@ -1,0 +1,7 @@
+name: inma-infra
+runtime: nodejs
+description: Infrastructure for Inma's wordpress sites
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: https://www.pulumi.com/ai/api/project/7e3ef7ca-af1a-40f1-add5-a4188944bc7b.zip
