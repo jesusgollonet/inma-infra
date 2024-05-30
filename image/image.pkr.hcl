@@ -18,6 +18,7 @@ source "hcloud" "inma-instance" {
   token = var.hcloud_token
   location = "nbg1"
   server_type = "cx11"
+  ssh_keys = ["inma-infra"]
   ssh_username = "root"
 }
 
