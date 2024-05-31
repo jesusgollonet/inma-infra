@@ -24,4 +24,9 @@ source "hcloud" "inma-instance" {
 
 build {
   sources  = ["source.hcloud.inma-instance"]
+  provisioner "shell" {
+    scripts = [
+      "provision.sh",
+    ]
+  }
 }
