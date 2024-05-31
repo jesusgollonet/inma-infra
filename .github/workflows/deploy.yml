@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    #- name: rsync deployments
-      #uses: burnett01/rsync-deployments@6.0.0
-      #with:
-        #switches: -Pav 
-        #path: app/ 
-        #remote_path: /root/
-        #remote_host: ${{ secrets.SERVER_IP }} 
-        #remote_user: root
-        #remote_key: ${{ secrets.SSH_KEY }}
+    - name: rsync deployments
+      uses: burnett01/rsync-deployments@6.0.0
+      with:
+        switches: -Pav 
+        path: app/ 
+        remote_path: /home/ubuntu/app
+        remote_host: ${{ secrets.SERVER_IP }} 
+        remote_user: root
+        remote_key: ${{ secrets.SSH_KEY }}
     - name: ssh to server
       uses: appleboy/ssh-action@master
       with:
