@@ -17,6 +17,7 @@ crash.log
 # subject to change depending on the environment.
 #
 *.pkrvars.hcl
+image/manifest.json
 
 # For built boxes
 *.box
