@@ -1,4 +1,4 @@
-localhost {
+test.overy.club {
 	respond "Hello from HTTPS!"
 }
 
