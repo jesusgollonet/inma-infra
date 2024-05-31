@@ -15,7 +15,7 @@ jobs:
       with:
         switches: -Pav 
         path: app/ 
-        remote_path: /home/ubuntu/app
+        remote_path: /root/app/
         remote_host: ${{ secrets.SERVER_IP }} 
         remote_user: root
         remote_key: ${{ secrets.SSH_KEY }}
@@ -27,5 +27,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           pwd
+          cd /root/app
           ls -al
+
           sudo docker compose up -d --no-deps --build --remove-orphans
