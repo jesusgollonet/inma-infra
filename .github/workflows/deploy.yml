@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - 7-deploy-docker-compose-setup
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: rsync deployments
+      uses: burnett01/rsync-deployments@6.0.0
+      with:
+        switches: -Pav 
+        path: app/ 
+        remote_path: /root
+        remote_host: ${{ secrets.SERVER_IP }} 
+        remote_user: root
+        remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: ssh to server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP}} 
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          pwd
+          ls -al
+          sudo docker compose up -d --no-deps --build --remove-orphans
