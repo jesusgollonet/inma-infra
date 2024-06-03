@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - 8-run-wordpress-through-docker-compose
+      - main 
 
 jobs:
   deploy:
