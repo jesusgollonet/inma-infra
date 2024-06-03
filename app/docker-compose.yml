@@ -4,6 +4,8 @@ services:
   web:
     image: caddy:2.8-alpine
     container_name: caddy
+    environment:
+      WP1_HOSTNAME: ${WP1_HOSTNAME}
     ports:
       - "80:80"
       - "443:443"
@@ -11,7 +13,40 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+    networks:
+      - wp_net
 
+
+  wp1:
+    image: wordpress:latest
+    container_name: wp1
+    environment:
+      WORDPRESS_DB_HOST: db1
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+    volumes:
+      - wp1_data:/var/www/html
+    networks:
+      - wp_net
+
+  db1:
+    image: mariadb:latest 
+    container_name: db1
+    environment:
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
+      MYSQL_USER: ${WORDPRESS_DB_USER}
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD} 
+      MYSQL_ROOT_PASSWORD: root_p1
+    volumes:
+      - db1_data:/var/lib/mysql
+    networks:
+      - wp_net
 volumes:
   caddy_data:
   caddy_config:
+  wp1_data:
+  db1_data:
+
+networks:
+  wp_net:
