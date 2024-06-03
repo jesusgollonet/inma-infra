@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - 7-deploy-docker-compose-setup
+      - main 
 
 jobs:
   deploy:
