@@ -1,4 +1,4 @@
-test.overy.club {
-	respond "Hello from HTTPS!"
+{$WP1_HOSTNAME} {
+    reverse_proxy wp1:80 
 }
 
