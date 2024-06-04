@@ -12,7 +12,6 @@ Nice little setup for running a couple of wordpress sites on a bare vps.
     - MySQL
     - Ideally some monitoring (TBD)
 
-
 ## Instructions
 
 ### Build base image (Packer)
@@ -35,6 +34,13 @@ pulumi config set hcloud:token $HCLOUD_TOKEN --secret
 pulumi up
 ```
 
+### Deploy services (Docker Compose)
 
+Github Actions deploys `app/docker-compose.yml` to the server. 
 
+It needs a few secrets, which are stored in github secrets. 
+
+The script `bin/env_to_gh_secrets` takes a local `app/.env.production` file and
+creates the secrets in the github repo through gh cli. Then the pipeline takes
+those secrets and creates a remote .env file.
 
