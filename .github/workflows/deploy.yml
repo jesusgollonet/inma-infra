@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main 
+      - 17-deploy-env 
 
 jobs:
   deploy:
@@ -28,6 +28,11 @@ jobs:
         script: |
           pwd
           cd /root/app
+          echo "WORDPRESS_DB_HOST=#{{ secrets.WORDPRESS_DB_HOST }}" > .env
+          echo "WORDPRESS_DB_USER=${{ secrets.WORDPRESS_DB_USER }}" >> .env
+          echo "WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}" >> .env
+          echo "WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           ls -al
 
           sudo docker compose up -d --no-deps --build --remove-orphans
