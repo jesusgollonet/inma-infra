@@ -28,8 +28,8 @@ jobs:
         script: |
           pwd
           cd /root/app
-          echo "WP1_HOSTNAME=#{{ secrets.WP1_HOSTNAME }}" > .env
-          echo "WORDPRESS_DB_HOST=#{{ secrets.WORDPRESS_DB_HOST }}" >> .env
+          echo "WP1_HOSTNAME=${{ secrets.WP1_HOSTNAME }}" > .env
+          echo "WORDPRESS_DB_HOST=${{ secrets.WORDPRESS_DB_HOST }}" >> .env
           echo "WORDPRESS_DB_USER=${{ secrets.WORDPRESS_DB_USER }}" >> .env
           echo "WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}" >> .env
           echo "WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}" >> .env
