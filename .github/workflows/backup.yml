@@ -1,0 +1,23 @@
+# ssh into the instance and backup tto s3 bucket
+#
+#
+name: backup
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: start docker compose 
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }} 
+        username: root
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          docker cp wp1:/var/www/html/wp-content .
+          docker exec ${secrets.WORDPRESS_DB_HOST} mariadb-dump -u ${secrets.WORDPRESS_DB_USER} -p${secrets.WORDPRESS_DB_PASSWORD} ${secrets.WORDPRESS_DB_NAME} > test.sql
