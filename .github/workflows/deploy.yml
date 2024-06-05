@@ -41,7 +41,7 @@ jobs:
     - name: Upload bucketName 
       uses: actions/upload-artifact@v4
       with:
-        name: bucketName
+        name: bucket-name
         path: bucketName.txt 
     - name: Use bucket name
       run: echo "The bucket name is ${{ env.bucketName }}"
@@ -52,7 +52,7 @@ jobs:
     - name: Download math result for job 1
       uses: actions/download-artifact@v4
       with:
-        name: bucketName
+        name: bucket-name
     - shell: bash
       run: |
         cat bucketName.txt >> "$GITHUB_ENV"
