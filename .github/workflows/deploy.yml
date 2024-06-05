@@ -41,7 +41,8 @@ jobs:
     - name: Upload bucketName 
       uses: actions/upload-artifact@v4
       with:
-        path: bucketName.txt 
+        name: bucket-name
+        path: infra/bucketName.txt 
     - name: Use bucket name
       run: echo "The bucket name is ${{ env.bucketName }}"
   deploy:
@@ -51,6 +52,7 @@ jobs:
     - name: download bucketName 
       uses: actions/download-artifact@v4
       with:
+        name: bucket-name
     - shell: bash
       run: |
         cat bucketName.txt >> "$GITHUB_ENV"
