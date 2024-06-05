@@ -14,7 +14,7 @@ jobs:
 
     - name: Set up Pulumi
       uses: pulumi/actions@v5
-      working-directory: ./instance
+      work-dir: ./instance
       with:
         command: up
       env:
