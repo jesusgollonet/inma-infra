@@ -24,8 +24,16 @@ jobs:
           docker cp wp1:/var/www/html/wp-content .
           docker exec ${{ secrets.WORDPRESS_DB_HOST }} mariadb-dump -u ${{ secrets.WORDPRESS_DB_USER }} -p${{ secrets.WORDPRESS_DB_PASSWORD }} ${{ secrets.WORDPRESS_DB_NAME }} > backup.sql
           source app/.env
+          echo $BACKUP_BUCKET_NAME
 
           pwd
           ls 
-          docker run --rm -e AWS_ACCESS_KEY_ID ${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY ${{ secrets.AWS_SECRET_ACCESS_KEY }} -v $(pwd):/backup amazon/aws-cli s3 cp /backup/backup.sql s3://$BACKUP_BUCKET_NAME/backup.sql
-          docker run --rm -e AWS_ACCESS_KEY_ID ${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY ${{ secrets.AWS_SECRET_ACCESS_KEY }} -v $(pwd):/backup amazon/aws-cli s3 cp /backup/wp-content s3://$BACKUP_BUCKET_NAME/wp-content --recursive
+
+          docker run --rm \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -v $(pwd):/backup amazon/aws-cli s3 cp /backup/backup.sql s3://$BACKUP_BUCKET_NAME/backup.sql
+          docker run --rm \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -v $(pwd):/backup amazon/aws-cli s3 cp /backup/wp-content s3://$BACKUP_BUCKET_NAME/wp-content
