@@ -1,6 +1,3 @@
-# ssh into the instance and backup to s3 bucket
-#
-#
 name: backup
 
 on:
