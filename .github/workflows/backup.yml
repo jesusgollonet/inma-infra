@@ -25,5 +25,5 @@ jobs:
 
           docker run --rm -it amazon/aws-cli aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           docker run --rm -it amazon/aws-cli aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          docker run --rm -it amazon/aws-cli s3 cp test.sql s3://${{  $BACKUP_BUCKET_NAME }}/backup.sql
-          docker run --rm -it amazon/aws-cli aws s3 cp wp-content s3://${{ $BACKUP_BUCKET_NAME }}/wp-content --recursive
+          docker run --rm -it amazon/aws-cli s3 cp test.sql s3://$BACKUP_BUCKET_NAME/backup.sql
+          docker run --rm -it amazon/aws-cli aws s3 cp wp-content s3://$BACKUP_BUCKET_NAME/wp-content --recursive
