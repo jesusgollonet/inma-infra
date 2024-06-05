@@ -37,14 +37,27 @@ jobs:
     - name: Get bucket name
       id: get_bucket_name
       working-directory: ./infra
-      run: echo "bucketName=$(pulumi stack output bucketName)" >> "$GITHUB_ENV"
-
+      run: echo "bucketName=$(pulumi stack output bucketName)" > bucketName.txt 
+    - name: Upload bucketName 
+      uses: actions/upload-artifact@v4
+      with:
+        name: bucketName
+        path: bucketName.txt 
     - name: Use bucket name
       run: echo "The bucket name is ${{ env.bucketName }}"
   deploy:
     runs-on: ubuntu-latest
     needs: provision
     steps:
+    - name: Download math result for job 1
+      uses: actions/download-artifact@v4
+      with:
+        name: bucketName
+    - shell: bash
+      run: |
+        cat bucketName.txt >> "$GITHUB_ENV"
+        echo "$GITHUB_ENV"
+        echo ${{ env.bucketName }}
     - uses: actions/checkout@v3
     - name: sync app files 
       uses: burnett01/rsync-deployments@6.0.0
