@@ -16,7 +16,7 @@ jobs:
       with:
         node-version: '20'
     - name: Install dependencies
-      working-directory: ./instance
+      working-directory: ./infra
       run: npm install
 
     - name: Set up Pulumi
@@ -24,7 +24,7 @@ jobs:
       with:
         command: up
         stack-name: inma
-        work-dir: ./instance
+        work-dir: ./infra
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

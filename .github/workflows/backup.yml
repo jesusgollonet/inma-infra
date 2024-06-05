@@ -1,4 +1,4 @@
-# ssh into the instance and backup tto s3 bucket
+# ssh into the instance and backup to s3 bucket
 #
 #
 name: backup
@@ -20,4 +20,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           docker cp wp1:/var/www/html/wp-content .
-          docker exec ${{ secrets.WORDPRESS_DB_HOST }} mariadb-dump -u ${{ secrets.WORDPRESS_DB_USER }} -p${{ secrets.WORDPRESS_DB_PASSWORD }} ${{ secrets.WORDPRESS_DB_NAME }} > test.sql
+          docker exec ${{ secrets.WORDPRESS_DB_HOST }} mariadb-dump -u ${{ secrets.WORDPRESS_DB_USER }} -p${{ secrets.WORDPRESS_DB_PASSWORD }} ${{ secrets.WORDPRESS_DB_NAME }} > backup.sql
+          
+          docker run --rm -it amazon/aws-cli s3 cp test.sql s3://${{ secrets.S3_BUCKET_NAME }}/test.sql
+          docker run --rm -it amazon/aws-cli aws s3 cp wp-content s3://${{ secrets.S3_BUCKET_NAME }}/wp-content --recursive
