@@ -36,6 +36,7 @@ jobs:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Get bucket name
       id: get_bucket_name
+      working-directory: ./infra
       run: echo "bucketName=$(pulumi stack output bucketName)" >> "$GITHUB_ENV"
 
     - name: Use bucket name
