@@ -29,7 +29,7 @@ Note down the image ID at the end of the build process. This will be used in the
 ### Deploy infra (Pulumi)
 
 ```shell
-cd instance
+cd infra
 pulumi config set hcloud:token $HCLOUD_TOKEN --secret
 pulumi up
 ```
