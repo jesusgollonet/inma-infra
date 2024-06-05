@@ -20,4 +20,4 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           docker cp wp1:/var/www/html/wp-content .
-          docker exec ${secrets.WORDPRESS_DB_HOST} mariadb-dump -u ${secrets.WORDPRESS_DB_USER} -p${secrets.WORDPRESS_DB_PASSWORD} ${secrets.WORDPRESS_DB_NAME} > test.sql
+          docker exec ${{ secrets.WORDPRESS_DB_HOST }} mariadb-dump -u ${{ secrets.WORDPRESS_DB_USER }} -p${{ secrets.WORDPRESS_DB_PASSWORD }} ${{ secrets.WORDPRESS_DB_NAME }} > test.sql
