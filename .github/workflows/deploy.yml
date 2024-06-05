@@ -16,7 +16,7 @@ jobs:
       uses: pulumi/actions@v5
       with:
         command: up
-        stack-name: inma-infra/inma
+        stack-name: inma-infra
         work-dir: ./instance
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
