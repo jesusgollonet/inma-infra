@@ -34,6 +34,12 @@ jobs:
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+   - name: Get bucket name
+     id: get_bucket_name
+     run: echo "bucketName=$(pulumi stack output bucketName)" >> $GITHUB_ENV
+
+   - name: Use bucket name
+     run: echo "The bucket name is ${{ env.bucketName }}"
   deploy:
     runs-on: ubuntu-latest
     needs: provision
@@ -62,5 +68,6 @@ jobs:
           echo "WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}" >> .env
           echo "WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}" >> .env
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "BACKUP_BUCKET_NAME=${{ env.bucketName }}" >> .env
 
           sudo docker compose up -d --no-deps --build --remove-orphans
