@@ -19,11 +19,15 @@ jobs:
         username: root
         key: ${{ secrets.SSH_KEY }}
         script: |
+          pwd 
+          ls
           docker cp wp1:/var/www/html/wp-content .
           docker exec ${{ secrets.WORDPRESS_DB_HOST }} mariadb-dump -u ${{ secrets.WORDPRESS_DB_USER }} -p${{ secrets.WORDPRESS_DB_PASSWORD }} ${{ secrets.WORDPRESS_DB_NAME }} > backup.sql
           source app/.env
 
+          pwd
+          ls 
           docker run --rm amazon/aws-cli configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           docker run --rm amazon/aws-cli configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          docker run --rm amazon/aws-cli s3 cp backup.sql s3://$BACKUP_BUCKET_NAME/backup.sql
-          docker run --rm amazon/aws-cli s3 cp wp-content s3://$BACKUP_BUCKET_NAME/wp-content --recursive
+          docker run --rm -v $(pwd):/backup amazon/aws-cli s3 cp /backup/backup.sql s3://$BACKUP_BUCKET_NAME/backup.sql
+          docker run --rm -v $(pwd):/backup amazon/aws-cli s3 cp /backup/wp-content s3://$BACKUP_BUCKET_NAME/wp-content --recursive
