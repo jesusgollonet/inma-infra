@@ -11,6 +11,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Install dependencies
+      working-directory: ./instance
+      run: npm install
 
     - name: Set up Pulumi
       uses: pulumi/actions@v5
@@ -23,6 +30,7 @@ jobs:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
   deploy:
     runs-on: ubuntu-latest
+    depends-on: provision
     steps:
     - uses: actions/checkout@v3
     - name: sync app files 
