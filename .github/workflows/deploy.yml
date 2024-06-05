@@ -14,9 +14,9 @@ jobs:
 
     - name: Set up Pulumi
       uses: pulumi/actions@v5
-      work-dir: ./instance
       with:
         command: up
+        work-dir: ./instance
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
   deploy:
