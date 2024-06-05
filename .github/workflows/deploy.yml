@@ -3,9 +3,22 @@ name: Deploy
 on:
   push:
     branches:
-      - main 
+      - 14-deploy-instance-from-gh-actions
 
 jobs:
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Pulumi
+      uses: pulumi/actions@v5
+      working-directory: ./instance
+      with:
+        command: up
+      env:
+        HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
   deploy:
     runs-on: ubuntu-latest
     steps:
