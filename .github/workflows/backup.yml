@@ -4,9 +4,8 @@
 name: backup
 
 on:
-  push:
-    branches:
-      - 16-backup-strategy
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   backup:
