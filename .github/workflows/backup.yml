@@ -12,7 +12,7 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-    - name: start docker compose 
+    - name: back up instance 
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_IP }} 
