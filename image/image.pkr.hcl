@@ -32,6 +32,7 @@ source "hcloud" "inma-instance" {
   ssh_keys = ["inma-infra"]
   ssh_username = "root"
   snapshot_name = var.name  
+  server_name = var.name
   snapshot_labels = {
     version = var.version 
     name = var.name
