@@ -20,7 +20,7 @@ const server = new hcloud.Server("my-server", {
 
 const dnsRecord = new dns.Record("comencemosporelfinal", {
   zoneId: "avxh7DEXYpyLhrRbhVKCqW",
-  name: "",
+  name: "@",
   type: "A",
   value: server.ipv4Address,
 });
