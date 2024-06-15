@@ -9,6 +9,7 @@
   "dependencies": {
     "@pulumi/aws": "^6.38.0",
     "@pulumi/hcloud": "1.16.1",
-    "@pulumi/pulumi": "*"
+    "@pulumi/pulumi": "*",
+    "pulumi-hetznerdns": "^1.5.17"
   }
 }

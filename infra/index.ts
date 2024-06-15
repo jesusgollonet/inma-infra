@@ -1,5 +1,7 @@
+import * as pulumi from "@pulumi/pulumi";
 import * as hcloud from "@pulumi/hcloud";
 import * as aws from "@pulumi/aws";
+import * as dns from "pulumi-hetznerdns";
 // create s3 bucket for backup
 const backupBucket = new aws.s3.Bucket("inma-infra-backup", {
   acl: "private",
@@ -14,6 +16,13 @@ const server = new hcloud.Server("my-server", {
   image: "40093247", // hardcoded image ID for pulumi docker-ce
   location: "nbg1",
   sshKeys: ["inma-infra"],
+});
+
+const dnsRecord = new dns.Record("comencemosporelfinal", {
+  zoneId: "avxh7DEXYpyLhrRbhVKCqW",
+  name: "",
+  type: "A",
+  value: server.ipv4Address,
 });
 
 // Export the server's IP address
