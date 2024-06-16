@@ -1,3 +1,7 @@
+www.{$WP1_HOSTNAME} {
+    redir https://{$WP1_HOSTNAME}{uri} 301
+}
+
 {$WP1_HOSTNAME} {
     reverse_proxy wp1:80 
 }
