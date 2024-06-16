@@ -18,9 +18,16 @@ const server = new hcloud.Server("my-server", {
   sshKeys: ["inma-infra"],
 });
 
-const dnsRecord = new dns.Record("comencemosporelfinal", {
+const rootRecord = new dns.Record("comencemosporelfinal", {
   zoneId: "avxh7DEXYpyLhrRbhVKCqW",
   name: "@",
+  type: "A",
+  value: server.ipv4Address,
+});
+
+const wwwRecord = new dns.Record("www.comencemosporelfinal", {
+  zoneId: "avxh7DEXYpyLhrRbhVKCqW",
+  name: "www",
   type: "A",
   value: server.ipv4Address,
 });
