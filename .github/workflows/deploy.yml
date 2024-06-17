@@ -37,13 +37,19 @@ jobs:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - run: echo "output is ${{ steps.pulumi.outputs.serverIp }}"
     - name: Set Pulumi Config
-      run: cd infra && pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN "--secret
+      working-directory: ./infra
+      run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN "--secret
       env:
+        HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
     - name: Pulumi Up
-      run: cd infra && pulumi up --yes 
+      working-directory: ./infra
+      run: pulumi up --yes 
       env:
+        HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     #- name: Get bucket name
       #id: get_bucket_name
