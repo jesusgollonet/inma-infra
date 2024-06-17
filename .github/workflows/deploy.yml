@@ -51,11 +51,11 @@ jobs:
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Get Server IP from Pulumi Output
-      id: pulumi-server-ip
+      id: pulumi_server_ip
       working-directory: ./infra
-      run: echo "::set-output name=serverIp::$(pulumi stack output serverIp)"
+      run: echo "::set-output name=serverIp::$(pulumi stack output serverIp --stack inma2)"
     - name: echo output
-      run: echo ${{ steps.pulumi-server-ip.outputs.serverIp }}
+      run: echo ${{ steps.pulumi_server_ip.outputs.serverIp }}
 
     #- name: Get bucket name
       #id: get_bucket_name
