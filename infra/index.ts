@@ -1,4 +1,3 @@
-import * as pulumi from "@pulumi/pulumi";
 import * as hcloud from "@pulumi/hcloud";
 import * as aws from "@pulumi/aws";
 import * as dns from "pulumi-hetznerdns";
