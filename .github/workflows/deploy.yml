@@ -53,7 +53,8 @@ jobs:
     - name: Get Server IP from Pulumi Output
       id: pulumi_server_ip
       working-directory: ./infra
-      run: echo "SERVER_IP=$(pulumi stack output serverIp --stack inma2)" >> $GITHUB_OUTPUT
+      run:|
+         echo "SERVER_IP=$(pulumi stack output serverIp --stack inma2)" >> $GITHUB_OUTPUT
     - name: echo output
       run: echo ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
 
@@ -62,54 +63,34 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         SERVER_IP: ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
-    #- name: Get bucket name
-      #id: get_bucket_name
-      #working-directory: ./infra
-      #run: echo "bucketName=$(pulumi stack output bucketName)" > bucketName.txt 
-    #- name: Upload bucketName 
-      #uses: actions/upload-artifact@v4
-      #with:
-        #name: bucket-name
-        #path: infra/bucketName.txt 
-    #- name: Use bucket name
-      #run: echo "The bucket name is ${{ env.bucketName }}"
-  #deploy:
-    #runs-on: ubuntu-latest
-    #needs: provision
-    #steps:
-    #- name: download bucketName 
-      #uses: actions/download-artifact@v4
-      #with:
-        #name: bucket-name
-    #- shell: bash
-      #run: |
-        #cat bucketName.txt >> "$GITHUB_ENV"
-        #echo "$GITHUB_ENV"
-        #echo ${{ env.bucketName }}
-    #- uses: actions/checkout@v3
-    #- name: sync app files 
-      #uses: burnett01/rsync-deployments@6.0.0
-      #with:
-        #switches: -Pav 
-        #path: app/ 
-        #remote_path: /root/app/
-        #remote_host: ${{ secrets.SERVER_IP }} 
-        #remote_user: root
-        #remote_key: ${{ secrets.SSH_KEY }}
-    #- name: start docker compose 
-      #uses: appleboy/ssh-action@master
-      #with:
-        #host: ${{ secrets.SERVER_IP }} 
-        #username: root
-        #key: ${{ secrets.SSH_KEY }}
-        #script: |
-          #cd /root/app
-          #echo "WP1_HOSTNAME=${{ secrets.WP1_HOSTNAME }}" > .env
-          #echo "WORDPRESS_DB_HOST=${{ secrets.WORDPRESS_DB_HOST }}" >> .env
-          #echo "WORDPRESS_DB_USER=${{ secrets.WORDPRESS_DB_USER }}" >> .env
-          #echo "WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}" >> .env
-          #echo "WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}" >> .env
-          #echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-          #echo "BACKUP_BUCKET_NAME=${{ env.bucketName }}" >> .env
+  deploy:
+    runs-on: ubuntu-latest
+    needs: provision
+    steps:
+    - uses: actions/checkout@v3
+    - name: sync app files 
+      uses: burnett01/rsync-deployments@6.0.0
+      with:
+        switches: -Pav 
+        path: app/ 
+        remote_path: /root/app/
+        remote_host: ${{ secrets.SERVER_IP }} 
+        remote_user: root
+        remote_key: ${{ secrets.SSH_KEY }}
+    - name: start docker compose 
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }} 
+        username: root
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /root/app
+          echo "WP1_HOSTNAME=${{ secrets.WP1_HOSTNAME }}" > .env
+          echo "WORDPRESS_DB_HOST=${{ secrets.WORDPRESS_DB_HOST }}" >> .env
+          echo "WORDPRESS_DB_USER=${{ secrets.WORDPRESS_DB_USER }}" >> .env
+          echo "WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}" >> .env
+          echo "WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "BACKUP_BUCKET_NAME=${{ env.bucketName }}" >> .env
 
-          #sudo docker compose up -d --no-deps --build --remove-orphans
+          sudo docker compose up -d --no-deps --build --remove-orphans
