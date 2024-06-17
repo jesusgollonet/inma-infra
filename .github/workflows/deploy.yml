@@ -57,6 +57,11 @@ jobs:
     - name: echo output
       run: echo ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
 
+    - name: Store Server IP
+      run: gh secret set SERVER_IP --body "$SERVER_IP" 
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        SERVER_IP: ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
     #- name: Get bucket name
       #id: get_bucket_name
       #working-directory: ./infra
