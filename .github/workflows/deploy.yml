@@ -53,9 +53,9 @@ jobs:
     - name: Get Server IP from Pulumi Output
       id: pulumi_server_ip
       working-directory: ./infra
-      run: echo "::set-output name=serverIp::$(pulumi stack output serverIp --stack inma2)"
+      run: echo "SERVER_IP=$(pulumi stack output serverIp --stack inma2)" >> $GITHUB_OUTPUT
     - name: echo output
-      run: echo ${{ steps.pulumi_server_ip.outputs.serverIp }}
+      run: echo ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
 
     #- name: Get bucket name
       #id: get_bucket_name
