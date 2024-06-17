@@ -29,9 +29,6 @@ jobs:
       id: pulumi
       uses: pulumi/actions@v5
       with:
-        config-map: | 
-          hetznerdns:apitoken ${{ secrets.HCLOUD_DNS_TOKEN }} 
-        command: up
         stack-name: inma2
         work-dir: ./infra
       env:
@@ -39,6 +36,15 @@ jobs:
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - run: echo "output is ${{ steps.pulumi.outputs.serverIp }}"
+    - name: Set Pulumi Config
+      run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN "--secret
+      env:
+        HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
+
+    - name: Pulumi Up
+      run: cd infra && pulumi up --yes 
+      env:
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     #- name: Get bucket name
       #id: get_bucket_name
       #working-directory: ./infra
