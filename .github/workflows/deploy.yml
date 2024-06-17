@@ -38,7 +38,7 @@ jobs:
     - run: echo "output is ${{ steps.pulumi.outputs.serverIp }}"
     - name: Set Pulumi Config
       working-directory: ./infra
-      run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN "--secret
+      run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN "--secret --stack inma2
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
 
     - name: Pulumi Up
       working-directory: ./infra
-      run: pulumi up --yes 
+      run: pulumi up --yes --stack inma2
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
