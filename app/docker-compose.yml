@@ -14,7 +14,6 @@ services:
     networks:
       - wp_net
 
-
   wp1:
     image: wordpress:latest
     container_name: wp1
