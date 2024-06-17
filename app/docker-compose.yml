@@ -39,6 +39,7 @@ services:
       - db1_data:/var/lib/mysql
     networks:
       - wp_net
+
 volumes:
   caddy_data:
   caddy_config:
