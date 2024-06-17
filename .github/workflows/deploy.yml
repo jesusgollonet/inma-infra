@@ -17,7 +17,6 @@ jobs:
       with:
         switches: -Pav 
         path: app/ 
-        exclude: '.env'
         remote_path: /root/app/
         remote_host: ${{ secrets.SERVER_IP }} 
         remote_user: root
