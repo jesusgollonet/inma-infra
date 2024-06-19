@@ -1,14 +1,5 @@
 import * as hcloud from "@pulumi/hcloud";
-import * as aws from "@pulumi/aws";
 import * as dns from "pulumi-hetznerdns";
-// create s3 bucket for backup
-const backupBucket = new aws.s3.Bucket("inma-infra-backup", {
-  acl: "private",
-  versioning: {
-    enabled: true,
-  },
-});
-
 // Create a new Hetzner Cloud Server from a snapshot
 const server = new hcloud.Server("my-server", {
   serverType: "cx11",
@@ -33,4 +24,3 @@ const wwwRecord = new dns.Record("www.comencemosporelfinal", {
 
 // Export the server's IP address
 export const serverIp = server.ipv4Address;
-export const bucketName = backupBucket.bucket;
