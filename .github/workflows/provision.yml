@@ -1,11 +1,11 @@
-name: Provision
+name: Provision Server
 
 on:
   push:
     branches:
       - main 
     paths:
-      - 'infra/**'
+      - 'infra/server/**'
 
 jobs:
   provision:
@@ -18,27 +18,21 @@ jobs:
       with:
         node-version: '20'
     - name: Install dependencies
-      working-directory: ./infra
+      working-directory: ./infra/server
       run: npm install
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1 
     - name: Set up Pulumi
       id: pulumi
       uses: pulumi/actions@v5
       with:
         stack-name: inma2
-        work-dir: ./infra
+        work-dir: ./infra/server
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Set Pulumi Config
-      working-directory: ./infra
+      working-directory: ./infra/server
       run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret --stack inma2
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
@@ -46,7 +40,7 @@ jobs:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
     - name: Pulumi Up
-      working-directory: ./infra
+      working-directory: ./infra/server
       run: pulumi up --yes --stack inma2
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
@@ -54,7 +48,7 @@ jobs:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Get Server IP from Pulumi Output
       id: pulumi_server_ip
-      working-directory: ./infra
+      working-directory: ./infra/server
       run: |
          echo "SERVER_IP=$(pulumi stack output serverIp --stack inma2)" >> $GITHUB_OUTPUT
     - name: echo output
