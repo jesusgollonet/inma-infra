@@ -1,5 +1,6 @@
 .env
-.env.production
+.env.prod
+.env.staging
 .DS_Store
 # Created by https://www.toptal.com/developers/gitignore/api/packer
 # Edit at https://www.toptal.com/developers/gitignore?templates=packer
