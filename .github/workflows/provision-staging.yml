@@ -3,12 +3,13 @@ name: Provision Staging Server
 on:
   push:
     branches:
-      - develop 
+      - 40-create-staging-environment
     paths:
       - 'infra/server/**'
 
 jobs:
-  provision:
+  provision-staging:
+    environment: staging
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code

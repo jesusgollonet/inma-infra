@@ -3,13 +3,15 @@ name: Deploy Staging
 on:
   push:
     branches:
-      - develop 
+      - 40-create-staging-environment
     paths:
       - 'app/**'
 
 jobs:
-  deploy:
+  deploy-staging:
     runs-on: ubuntu-latest
+    environment: staging
+    needs: provision-staging
     steps:
     - uses: actions/checkout@v3
     - name: sync app files 
