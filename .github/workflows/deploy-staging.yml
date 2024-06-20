@@ -1,0 +1,40 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - develop 
+    paths:
+      - 'app/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: sync app files 
+      uses: burnett01/rsync-deployments@6.0.0
+      with:
+        switches: -Pav 
+        path: app/ 
+        remote_path: /root/app/
+        remote_host: ${{ secrets.SERVER_IP }} 
+        remote_user: root
+        remote_key: ${{ secrets.SSH_KEY }}
+    - name: start docker compose 
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }} 
+        username: root
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /root/app
+          echo "WP1_HOSTNAME=${{ secrets.WP1_HOSTNAME }}" > .env
+          echo "WORDPRESS_DB_HOST=${{ secrets.WORDPRESS_DB_HOST }}" >> .env
+          echo "WORDPRESS_DB_USER=${{ secrets.WORDPRESS_DB_USER }}" >> .env
+          echo "WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}" >> .env
+          echo "WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "BACKUP_BUCKET_NAME=${{ env.bucketName }}" >> .env
+
+          sudo docker compose up -d --no-deps --build --remove-orphans
