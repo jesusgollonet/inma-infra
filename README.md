@@ -44,3 +44,30 @@ The script `bin/env_to_gh_secrets` takes a local `app/.env.production` file and
 creates the secrets in the github repo through gh cli. Then the pipeline takes
 those secrets and creates a remote .env file.
 
+### Secret management
+
+Secrets are managed in gh actions. I use repository level secrets for commmon
+ones and environments for app level secrets. So there are 3 env files. 
+
+- `.env` for common env vars (hcloud regular and dns token, aws access keys)
+- `.env.prod` for production env vars (db passwords, etc)
+- `.env.staging` for staging env vars (db passwords, etc)
+
+I have a utility script that copies the local env vars to gh secrets, optionally
+using environments
+
+```shell
+# repository secrets
+bin/env_to_gh_secrets .env
+
+
+# prod specific secrets
+bin/env_to_gh_secrets .env.prod prod
+
+
+# staging specific secrets
+bin/env_to_gh_secrets .env.staging staging
+```
+`
+
+
