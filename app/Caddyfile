@@ -1,9 +1,33 @@
+# Production www redirect
 www.{$WP1_HOSTNAME} {
     redir https://{$WP1_HOSTNAME}{uri} 301
 }
 
+# Main WordPress site (production)
 {$WP1_HOSTNAME} {
     reverse_proxy wp1:80 
+
+    # Deny access to .git directories
+    @denyGit {
+        path /.git*
+    }
+    respond @denyGit 403
+}
+
+# Staging subdomain (if configured)
+staging.{$WP1_HOSTNAME} {
+    reverse_proxy wp1:80 
+
+    # Deny access to .git directories
+    @denyGit {
+        path /.git*
+    }
+    respond @denyGit 403
+}
+
+# Second WordPress site (if configured)
+{$WP2_HOSTNAME} {
+    reverse_proxy wp2:80 
 
     # Deny access to .git directories
     @denyGit {

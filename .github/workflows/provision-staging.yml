@@ -1,0 +1,61 @@
+name: Provision Staging Server
+
+on:
+  push:
+    branches:
+      - 40-create-staging-environment
+    paths:
+      - 'infra/server/**'
+
+jobs:
+  provision-staging:
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Install dependencies
+      working-directory: ./infra/server
+      run: npm install
+
+    - name: Create or Select Pulumi Stack
+      working-directory: ./infra/server
+      run: |
+        pulumi stack select staging || pulumi stack init staging
+      env:
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    
+    - name: Set Pulumi Config
+      working-directory: ./infra/server
+      run: |
+        pulumi config set hcloud:token "$HCLOUD_TOKEN" --secret
+        pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret
+      env:
+        HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+    - name: Pulumi Up
+      working-directory: ./infra/server
+      run: pulumi up --yes
+      env:
+        HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    - name: Get Server IP from Pulumi Output
+      id: pulumi_server_ip
+      working-directory: ./infra/server
+      run: |
+         echo "SERVER_IP=$(pulumi stack output serverIp)" >> $GITHUB_OUTPUT
+    - name: echo output
+      run: echo ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
+
+    - name: Store Server IP
+      run: gh secret set SERVER_IP --body "$SERVER_IP" --env staging
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        SERVER_IP: ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
