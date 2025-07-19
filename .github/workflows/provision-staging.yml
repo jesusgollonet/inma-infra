@@ -26,7 +26,7 @@ jobs:
       id: pulumi
       uses: pulumi/actions@v5
       with:
-        stack-name: inma2
+        stack-name: staging
         work-dir: ./infra/server
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
@@ -34,7 +34,7 @@ jobs:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Set Pulumi Config
       working-directory: ./infra/server
-      run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret --stack inma2
+      run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret --stack staging
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
@@ -42,7 +42,7 @@ jobs:
 
     - name: Pulumi Up
       working-directory: ./infra/server
-      run: pulumi up --yes --stack inma2
+      run: pulumi up --yes --stack staging
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
@@ -51,12 +51,12 @@ jobs:
       id: pulumi_server_ip
       working-directory: ./infra/server
       run: |
-         echo "SERVER_IP=$(pulumi stack output serverIp --stack inma2)" >> $GITHUB_OUTPUT
+         echo "SERVER_IP=$(pulumi stack output serverIp --stack staging)" >> $GITHUB_OUTPUT
     - name: echo output
       run: echo ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
 
     - name: Store Server IP
-      run: gh secret set SERVER_IP --body "$SERVER_IP" 
+      run: gh secret set SERVER_IP --body "$SERVER_IP" --env staging
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         SERVER_IP: ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}

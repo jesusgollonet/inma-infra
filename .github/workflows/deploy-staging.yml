@@ -6,12 +6,18 @@ on:
       - 40-create-staging-environment
     paths:
       - 'app/**'
+  workflow_run:
+    workflows: ["Provision Staging Server"]
+    types:
+      - completed
+    branches:
+      - 40-create-staging-environment
 
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     environment: staging
-    needs: provision-staging
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     steps:
     - uses: actions/checkout@v3
     - name: sync app files 
@@ -32,11 +38,19 @@ jobs:
         script: |
           cd /root/app
           echo "WP1_HOSTNAME=${{ secrets.WP1_HOSTNAME }}" > .env
+          echo "WP2_HOSTNAME=${{ secrets.WP2_HOSTNAME }}" >> .env
           echo "WORDPRESS_DB_HOST=${{ secrets.WORDPRESS_DB_HOST }}" >> .env
           echo "WORDPRESS_DB_USER=${{ secrets.WORDPRESS_DB_USER }}" >> .env
           echo "WORDPRESS_DB_PASSWORD=${{ secrets.WORDPRESS_DB_PASSWORD }}" >> .env
           echo "WORDPRESS_DB_NAME=${{ secrets.WORDPRESS_DB_NAME }}" >> .env
+          echo "WORDPRESS_DB_NAME2=${{ secrets.WORDPRESS_DB_NAME2 }}" >> .env
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "BACKUP_BUCKET_NAME=${{ env.bucketName }}" >> .env
 
-          sudo docker compose up -d --no-deps --build --remove-orphans
+          # Start basic services first
+          sudo docker compose up -d --remove-orphans
+          
+          # Start multi-site services if WP2_HOSTNAME is configured
+          if [ ! -z "${{ secrets.WP2_HOSTNAME }}" ]; then
+            sudo docker compose --profile multi-site up -d
+          fi
