@@ -28,13 +28,16 @@ jobs:
       with:
         stack-name: staging
         work-dir: ./infra/server
+        upsert: true
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Set Pulumi Config
       working-directory: ./infra/server
-      run: pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret --stack staging
+      run: |
+        pulumi config set hcloud:token "$HCLOUD_TOKEN" --secret --stack staging
+        pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret --stack staging
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
