@@ -7,7 +7,7 @@ const isStaging = stack === "staging";
 
 // Create a new Hetzner Cloud Server from a snapshot
 const server = new hcloud.Server(`${stack}-server`, {
-  serverType: "cx11",
+  serverType: "cx22", // cx11 was deprecated, cx22 is the replacement
   image: "40093247", // hardcoded image ID for pulumi docker-ce
   location: "nbg1",
   sshKeys: ["inma-infra"],
