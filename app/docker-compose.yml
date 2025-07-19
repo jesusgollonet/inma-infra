@@ -4,6 +4,7 @@ services:
     container_name: caddy
     environment:
       WP1_HOSTNAME: ${WP1_HOSTNAME}
+      WP2_HOSTNAME: ${WP2_HOSTNAME:-}
     ports:
       - "80:80"
       - "443:443"
@@ -27,6 +28,22 @@ services:
     networks:
       - wp_net
 
+  # Second WordPress site (optional)
+  wp2:
+    image: wordpress:latest
+    container_name: wp2
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST2:-db1}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER2:-${WORDPRESS_DB_USER}}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD2:-${WORDPRESS_DB_PASSWORD}}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME2:-wp2}
+    volumes:
+      - wp2_data:/var/www/html
+    networks:
+      - wp_net
+    profiles:
+      - multi-site
+
   db1:
     image: mariadb:latest 
     container_name: db1
@@ -37,6 +54,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - db1_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     networks:
       - wp_net
 
@@ -44,6 +62,7 @@ volumes:
   caddy_data:
   caddy_config:
   wp1_data:
+  wp2_data:
   db1_data:
 
 networks:
