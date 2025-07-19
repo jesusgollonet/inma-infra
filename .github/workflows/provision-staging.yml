@@ -22,22 +22,18 @@ jobs:
       working-directory: ./infra/server
       run: npm install
 
-    - name: Set up Pulumi
-      id: pulumi
-      uses: pulumi/actions@v5
-      with:
-        stack-name: staging
-        work-dir: ./infra/server
-        upsert: true
+    - name: Create or Select Pulumi Stack
+      working-directory: ./infra/server
+      run: |
+        pulumi stack select staging || pulumi stack init staging
       env:
-        HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-        HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    
     - name: Set Pulumi Config
       working-directory: ./infra/server
       run: |
-        pulumi config set hcloud:token "$HCLOUD_TOKEN" --secret --stack staging
-        pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret --stack staging
+        pulumi config set hcloud:token "$HCLOUD_TOKEN" --secret
+        pulumi config set hetznerdns:apitoken "$HCLOUD_DNS_TOKEN" --secret
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
@@ -45,7 +41,7 @@ jobs:
 
     - name: Pulumi Up
       working-directory: ./infra/server
-      run: pulumi up --yes --stack staging
+      run: pulumi up --yes
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HCLOUD_DNS_TOKEN: ${{ secrets.HCLOUD_DNS_TOKEN }}
@@ -54,7 +50,7 @@ jobs:
       id: pulumi_server_ip
       working-directory: ./infra/server
       run: |
-         echo "SERVER_IP=$(pulumi stack output serverIp --stack staging)" >> $GITHUB_OUTPUT
+         echo "SERVER_IP=$(pulumi stack output serverIp)" >> $GITHUB_OUTPUT
     - name: echo output
       run: echo ${{ steps.pulumi_server_ip.outputs.SERVER_IP }}
 
