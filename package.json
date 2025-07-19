@@ -1,0 +1,22 @@
+{
+  "name": "inma-infra",
+  "version": "1.0.0",
+  "description": "WordPress hosting infrastructure with Pulumi, Docker Compose, and GitHub Actions",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "lint:actionlint": "actionlint",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    ".github/workflows/*.yml": ["actionlint"],
+    ".github/workflows/*.yaml": ["actionlint"]
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
