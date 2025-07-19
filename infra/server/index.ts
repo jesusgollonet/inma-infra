@@ -35,5 +35,5 @@ if (!isStaging) {
   });
 }
 
-// Export the server's IP address
+// Export the server's IP address for deployment
 export const serverIp = server.ipv4Address;
