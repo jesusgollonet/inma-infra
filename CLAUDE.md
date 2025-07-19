@@ -6,10 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a WordPress hosting infrastructure project that uses a multi-layered approach:
 
-1. **Packer**: Creates base images for Hetzner Cloud servers with Docker CE pre-installed
-2. **Pulumi**: Manages cloud infrastructure (servers, DNS records, S3 backup buckets)
-3. **Docker Compose**: Orchestrates the application stack (WordPress, MariaDB, Caddy)
-4. **GitHub Actions**: Handles CI/CD deployment pipeline
+1. **Pulumi**: Manages cloud infrastructure (servers, DNS records, S3 backup buckets)
+2. **Docker Compose**: Orchestrates the application stack (WordPress, MariaDB, Caddy)
+3. **GitHub Actions**: Handles CI/CD deployment pipeline
 
 ## Key Components
 
