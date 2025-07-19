@@ -47,6 +47,9 @@ jobs:
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "BACKUP_BUCKET_NAME=${{ env.bucketName }}" >> .env
 
+          # Use staging Caddyfile
+          cp Caddyfile.staging Caddyfile
+
           # Start basic services first
           sudo docker compose up -d --remove-orphans
           

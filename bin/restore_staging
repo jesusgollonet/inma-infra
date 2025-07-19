@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Restore backup to staging environment
+# Usage: ./bin/restore_staging
+
+set -e
+
+echo "Starting backup restoration to staging environment..."
+
+# Check if we're in the right directory
+if [ ! -f "backup/backup.sql" ] || [ ! -d "backup" ]; then
+    echo "Error: backup.sql or backup directory not found. Run this from the project root."
+    exit 1
+fi
+
+# Check if required environment variables are set
+if [ -z "$SERVER_IP" ] || [ -z "$SSH_KEY_PATH" ]; then
+    echo "Error: SERVER_IP and SSH_KEY_PATH environment variables must be set"
+    echo "Example: SERVER_IP=1.2.3.4 SSH_KEY_PATH=~/.ssh/id_rsa ./bin/restore_staging"
+    exit 1
+fi
+
+echo "Uploading backup files to staging server..."
+
+# Upload backup files to staging server
+rsync -Pav --delete backup/ root@$SERVER_IP:/root/backup/
+
+echo "Connecting to staging server to restore backup..."
+
+# SSH into staging server and restore
+ssh -i "$SSH_KEY_PATH" root@$SERVER_IP << 'EOF'
+cd /root/app
+
+echo "Stopping WordPress container to restore wp-content..."
+docker compose stop wp1
+
+echo "Restoring wp-content..."
+rm -rf wp-content
+cp -r /root/backup wp-content
+
+echo "Restoring database..."
+# Ensure database container is running
+docker compose up -d db1
+
+# Wait for database to be ready
+while ! docker exec db1 mariadb-admin ping -h"localhost" --silent; do
+    echo "Waiting for database..."
+    sleep 2
+done
+
+# Import database backup
+docker exec -i db1 mariadb -u root -p"$MYSQL_ROOT_PASSWORD" "$WORDPRESS_DB_NAME" < /root/backup/backup.sql
+
+echo "Starting WordPress container..."
+docker compose start wp1
+
+echo "Backup restoration completed successfully!"
+EOF
+
+echo "Staging environment restored from backup."

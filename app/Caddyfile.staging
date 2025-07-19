@@ -1,0 +1,10 @@
+# Staging site configuration
+{$WP1_HOSTNAME} {
+    reverse_proxy wp1:80 
+
+    # Deny access to .git directories
+    @denyGit {
+        path /.git*
+    }
+    respond @denyGit 403
+}
