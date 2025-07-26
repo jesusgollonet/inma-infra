@@ -29,6 +29,9 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         envs: AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,BACKUP_BUCKET_NAME,WORDPRESS_DB_HOST,WORDPRESS_DB_USER,WORDPRESS_DB_PASSWORD,WORDPRESS_DB_NAME
         script: |
+          docker ps
+          which docker
+          pwd
           docker cp wp1:/var/www/html/wp-content .
           docker exec "$WORDPRESS_DB_HOST" mariadb-dump -u "$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" "$WORDPRESS_DB_NAME" > backup.sql
 
