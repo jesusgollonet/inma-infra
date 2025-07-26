@@ -11,6 +11,7 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
+    environment: prod
     steps:
     - name: back up instance 
       uses: appleboy/ssh-action@master
